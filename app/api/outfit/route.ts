@@ -22,9 +22,18 @@ const OUTFIT_SCHEMA = {
 
 export async function POST(req: NextRequest) {
   try {
-    const { zip, promptOverrides } = Input.parse(await req.json());
+    // Log the raw request body so we can see exactly what the client sent
+    const body = await req.json();
+    console.log("[outfit] request body", body);
+
+    const { zip, promptOverrides } = Input.parse(body);
+    console.log("[outfit] parsed input", { zip, promptOverrides });
+
     const { lat, lon } = await zipToLatLon(zip);
+    console.log("[outfit] zip lookup", { lat, lon });
+
     const weather: WeatherSummary = await getWeather(lat, lon);
+    console.log("[outfit] weather", weather);
 
     const basePolicy = `
 You are a pediatric-outfit assistant for an 11-month-old.
@@ -56,10 +65,17 @@ JSON Schema:
 ${JSON.stringify(OUTFIT_SCHEMA)}`
   },
 ];
+    console.log("[outfit] messages", messages);
 
-    const recommendation = await callOpenRouterJSON<Recommendation>(messages, OUTFIT_SCHEMA);
+    const recommendation = await callOpenRouterJSON<Recommendation>(
+      messages,
+      OUTFIT_SCHEMA,
+    );
+    console.log("[outfit] recommendation", recommendation);
+
     return NextResponse.json({ zip, lat, lon, weather, recommendation });
   } catch (e) {
+    console.error("[outfit] error", e);
     const message = e instanceof Error ? e.message : "Bad request";
     return NextResponse.json({ error: message }, { status: 400 });
   }
