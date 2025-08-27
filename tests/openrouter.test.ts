@@ -27,3 +27,11 @@ test('throws on non-ok response', async () => {
   mockFetch(new Response('bad', { status: 500 }));
   await assert.rejects(() => callOpenRouterJSON([], {}), /OpenRouter failed/);
 });
+
+test('requires API key', async () => {
+  delete process.env.OPENROUTER_API_KEY;
+  await assert.rejects(
+    () => callOpenRouterJSON([], {}),
+    /OPENROUTER_API_KEY is required/,
+  );
+});

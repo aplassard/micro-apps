@@ -44,3 +44,13 @@ npm test
 ```
 
 This compiles the TypeScript sources and executes the tests using Node's built-in test runner.
+
+### Continuous Integration
+
+A GitHub Actions workflow in `.github/workflows/ci.yml` runs the linter and test suite on every push and pull request.
+To enable it:
+
+1. In your repository on GitHub, go to **Settings → Secrets and variables → Actions**.
+2. Add a new repository secret named `OPENROUTER_API_KEY` with your API key.
+
+The workflow maps that secret to an environment variable so integration tests that call OpenRouter can run automatically.
