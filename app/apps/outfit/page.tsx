@@ -1,10 +1,11 @@
 "use client";
 import { useState } from "react";
+import type { OutfitResponse } from "@/lib/outfit";
 
 export default function OutfitApp() {
   const [zip, setZip] = useState("44118");
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<OutfitResponse | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
   async function run() {
@@ -15,7 +16,8 @@ export default function OutfitApp() {
       body: JSON.stringify({ zip })
     });
     if (!r.ok) { setErr(await r.text()); setLoading(false); return; }
-    setResult(await r.json());
+    const data: OutfitResponse = await r.json();
+    setResult(data);
     setLoading(false);
   }
 
