@@ -11,7 +11,7 @@ function mockFetch(response: Response) {
 
 test('parses JSON from OpenRouter output', async () => {
   process.env.OPENROUTER_API_KEY = 'test-key';
-  const body = { output: [{ content: [{ text: '{"a":1}' }] }] };
+  const body = { choices: [{ message: { content: '{"a":1}' } }] };
   mockFetch(new Response(JSON.stringify(body), { status: 200 }));
   const result = await callOpenRouterJSON<{ a: number }>([], {});
   assert.deepEqual(result, { a: 1 });
@@ -19,7 +19,7 @@ test('parses JSON from OpenRouter output', async () => {
 
 test('throws on invalid JSON', async () => {
   process.env.OPENROUTER_API_KEY = 'test-key';
-  const body = { output: [{ content: [{ text: 'not json' }] }] };
+  const body = { choices: [{ message: { content: 'not json' } }] };
   mockFetch(new Response(JSON.stringify(body), { status: 200 }));
   await assert.rejects(() => callOpenRouterJSON([], {}), /Invalid JSON/);
 });

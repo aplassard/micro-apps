@@ -37,15 +37,11 @@ async function ensureBuilt() {
 
 test(
   'outfit API returns recommendation',
-  { timeout: 180000 },
+  { timeout: 180000, skip: !process.env.OPENROUTER_API_KEY },
   async () => {
     process.env.OPENROUTER_MODEL = 'openai/gpt-oss-20b:free';
     process.env.BASIC_AUTH_USER = 'user';
     process.env.BASIC_AUTH_PASS = 'password';
-
-    if (!process.env.OPENROUTER_API_KEY) {
-      throw new Error('OPENROUTER_API_KEY must be set');
-    }
 
     await ensureBuilt();
     const server = spawn('npm', ['start'], {

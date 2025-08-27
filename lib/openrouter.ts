@@ -7,15 +7,23 @@ export async function callOpenRouterJSON<T>(
   if (!apiKey) throw new Error("OPENROUTER_API_KEY is required");
   console.log("[openrouter] request", { model, messages, jsonSchema });
 
-  const res = await fetch("https://openrouter.ai/api/v1/responses", {
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${apiKey}`,
+    "Content-Type": "application/json",
+  };
+  if (process.env.OPENROUTER_HTTP_REFERER) {
+    headers["HTTP-Referer"] = process.env.OPENROUTER_HTTP_REFERER;
+  }
+  if (process.env.OPENROUTER_X_TITLE) {
+    headers["X-Title"] = process.env.OPENROUTER_X_TITLE;
+  }
+
+  const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
+    headers,
     body: JSON.stringify({
       model,
-      input: messages,
+      messages,
       response_format: {
         type: "json_schema",
         json_schema: { name: "response", schema: jsonSchema },
@@ -29,8 +37,8 @@ export async function callOpenRouterJSON<T>(
   if (!res.ok) throw new Error(`OpenRouter failed: ${raw}`);
   const data = JSON.parse(raw);
   const text =
-    data?.output?.[0]?.content?.[0]?.text ??
     data?.choices?.[0]?.message?.content ??
+    data?.output?.[0]?.content?.[0]?.text ??
     "";
   try {
     return JSON.parse(text) as T;
