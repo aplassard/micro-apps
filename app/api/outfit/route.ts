@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { zipToLatLon, getWeather, WeatherSummary } from "@/lib/geoWeather";
 import { callOpenRouterJSON } from "@/lib/openrouter";
+import type { Recommendation } from "@/lib/outfit";
 
 const Input = z.object({
   zip: z.string().min(3),
@@ -56,9 +57,10 @@ ${JSON.stringify(OUTFIT_SCHEMA)}`
   },
 ];
 
-    const recommendation = await callOpenRouterJSON<any>(messages, OUTFIT_SCHEMA);
+    const recommendation = await callOpenRouterJSON<Recommendation>(messages, OUTFIT_SCHEMA);
     return NextResponse.json({ zip, lat, lon, weather, recommendation });
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message ?? "Bad request" }, { status: 400 });
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "Bad request";
+    return NextResponse.json({ error: message }, { status: 400 });
   }
 }

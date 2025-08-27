@@ -34,3 +34,23 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Testing
+
+Run the unit tests with:
+
+```bash
+npm test
+```
+
+This compiles the TypeScript sources and executes the tests using Node's built-in test runner.
+
+### Continuous Integration
+
+A GitHub Actions workflow in `.github/workflows/ci.yml` runs the linter and test suite on every push and pull request.
+To enable it:
+
+1. In your repository on GitHub, go to **Settings → Secrets and variables → Actions**.
+2. Add a new repository secret named `OPENROUTER_API_KEY` with your API key.
+
+The workflow maps that secret to an environment variable so integration tests that call OpenRouter can run automatically.
