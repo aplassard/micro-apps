@@ -2,6 +2,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { setTimeout as delay } from 'node:timers/promises';
+import { access } from 'node:fs/promises';
+import path from 'node:path';
 
 async function waitForServer(url: string, timeout = 60000) {
   const start = Date.now();
@@ -13,6 +15,24 @@ async function waitForServer(url: string, timeout = 60000) {
     await delay(1000);
   }
   throw new Error('Server did not start');
+}
+
+async function ensureBuilt() {
+  const manifest = path.join(process.cwd(), '.next', 'routes-manifest.json');
+  try {
+    await access(manifest);
+    return; // already built
+  } catch {}
+  await new Promise<void>((resolve, reject) => {
+    const build = spawn('npm', ['run', 'build'], {
+      env: process.env,
+      stdio: 'inherit',
+    });
+    build.on('exit', (code) => {
+      code === 0 ? resolve() : reject(new Error(`build failed: ${code}`));
+    });
+  });
+  await access(manifest);
 }
 
 test(
@@ -27,6 +47,7 @@ test(
       throw new Error('OPENROUTER_API_KEY must be set');
     }
 
+    await ensureBuilt();
     const server = spawn('npm', ['start'], {
       env: process.env,
       stdio: 'inherit',
