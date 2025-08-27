@@ -19,9 +19,13 @@ test(
   'outfit API returns recommendation',
   { timeout: 180000 },
   async () => {
-    process.env.OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || 'openai/gpt-oss-20b:free';
-    process.env.BASIC_AUTH_USER = process.env.BASIC_AUTH_USER || 'user';
-    process.env.BASIC_AUTH_PASS = process.env.BASIC_AUTH_PASS || 'password';
+    process.env.OPENROUTER_MODEL = 'openai/gpt-oss-20b:free';
+    process.env.BASIC_AUTH_USER = 'user';
+    process.env.BASIC_AUTH_PASS = 'password';
+
+    if (!process.env.OPENROUTER_API_KEY) {
+      throw new Error('OPENROUTER_API_KEY must be set');
+    }
 
     const server = spawn('npm', ['start'], {
       env: process.env,
