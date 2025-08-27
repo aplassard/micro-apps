@@ -28,9 +28,13 @@ async function ensureBuilt() {
       env: process.env,
       stdio: 'inherit',
     });
-    build.on('exit', (code) => {
-      code === 0 ? resolve() : reject(new Error(`build failed: ${code}`));
-    });
+      build.on('exit', (code) => {
+        if (code === 0) {
+          resolve();
+        } else {
+          reject(new Error(`build failed: ${code}`));
+        }
+      });
   });
   await access(manifest);
 }

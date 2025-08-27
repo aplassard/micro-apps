@@ -1,3 +1,5 @@
+import "./globals.css";
+
 export const metadata = {
   title: "Micro Apps",
   description: "A hub of small personal web apps",
@@ -10,9 +12,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-white text-black">
-        {children}
-      </body>
+      <body className="min-h-screen bg-white text-black">{children}</body>
     </html>
   );
 }
