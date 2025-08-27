@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      OPENROUTER_MODEL: openai/gpt-oss-20b:free
+      BASIC_AUTH_USER: user
+      BASIC_AUTH_PASS: password
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,5 +26,7 @@ jobs:
         run: npm ci
       - name: Lint
         run: npm run lint
+      - name: Build
+        run: npm run build
       - name: Test
         run: npm test

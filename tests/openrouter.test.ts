@@ -2,6 +2,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { callOpenRouterJSON } from '../lib/openrouter';
 
+const ORIGINAL_KEY = process.env.OPENROUTER_API_KEY;
+
 function mockFetch(response: Response) {
   (globalThis as unknown as { fetch: typeof fetch }).fetch = () =>
     Promise.resolve(response);
@@ -34,4 +36,8 @@ test('requires API key', async () => {
     () => callOpenRouterJSON([], {}),
     /OPENROUTER_API_KEY is required/,
   );
+});
+
+test.after(() => {
+  process.env.OPENROUTER_API_KEY = ORIGINAL_KEY;
 });
