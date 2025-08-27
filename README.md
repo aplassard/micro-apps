@@ -45,6 +45,13 @@ npm test
 
 This compiles the TypeScript sources and executes the tests using Node's built-in test runner.
 
+## Configuration
+
+Set the following environment variables as needed:
+
+- `VERBOSE`: any truthy value enables debug logging for development.
+- `BASIC_AUTH_USER` and `BASIC_AUTH_PASS`: enable optional HTTP basic authentication.
+
 ### Continuous Integration
 
 A GitHub Actions workflow in `.github/workflows/ci.yml` runs the linter and test suite on every push and pull request.
