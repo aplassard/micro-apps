@@ -16,7 +16,12 @@ export async function zipToLatLon(zip: string): Promise<{ lat: number; lon: numb
     limit: "1",
   });
   const res = await fetch(
-    `https://nominatim.openstreetmap.org/search?${params.toString()}`
+    `https://nominatim.openstreetmap.org/search?${params.toString()}`,
+    {
+      headers: {
+        "User-Agent": "micro-apps tests (contact@example.com)",
+      },
+    }
   );
   if (!res.ok) throw new Error("ZIP lookup failed");
   const data = await res.json();
