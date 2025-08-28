@@ -1,14 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const USER = process.env.BASIC_AUTH_USER!;
-const PASS = process.env.BASIC_AUTH_PASS!;
-const EXPECTED = Buffer.from(`${USER}:${PASS}`).toString("base64");
-
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // allow static assets/unprotected paths
   if (
     pathname.startsWith("/_next/") ||
     pathname.startsWith("/icon") ||
@@ -18,8 +13,13 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
+  const user = process.env.BASIC_AUTH_USER;
+  const pass = process.env.BASIC_AUTH_PASS;
+  if (!user || !pass) return NextResponse.next();
+
+  const expected = Buffer.from(`${user}:${pass}`).toString("base64");
   const auth = req.headers.get("authorization") || "";
-  if (auth === `Basic ${EXPECTED}`) return NextResponse.next();
+  if (auth === `Basic ${expected}`) return NextResponse.next();
 
   return new NextResponse("Authentication required.", {
     status: 401,
@@ -27,5 +27,4 @@ export function middleware(req: NextRequest) {
   });
 }
 
-// protect everything except Next static assets
 export const config = { matcher: ["/((?!_next/static|_next/image).*)"] };
