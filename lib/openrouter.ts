@@ -3,7 +3,7 @@ import { debug } from "./logger";
 export async function callOpenRouterJSON<T>(
   messages: { role: "system" | "user" | "assistant"; content: string }[],
   jsonSchema: unknown,
-  model = process.env.OPENROUTER_MODEL || "openrouter/auto",
+  model = process.env.OPENROUTER_MODEL || "openai/gpt-5-nano",
 ): Promise<T> {
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) throw new Error("OPENROUTER_API_KEY is required");
