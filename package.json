@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "test": "tsc lib/*.ts middleware.ts tests/*.ts --outDir dist --module commonjs --esModuleInterop --skipLibCheck && node --test dist/tests/*.test.js"
