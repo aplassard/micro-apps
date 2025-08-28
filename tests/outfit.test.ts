@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { NextRequest } from 'next/server';
 import { POST } from '../app/api/outfit/route';
 
-function mockFetch(url: RequestInfo | URL, init?: RequestInit) {
+function mockFetch(...[url]: Parameters<typeof fetch>): ReturnType<typeof fetch> {
   const u = typeof url === 'string' ? url : url.toString();
   if (u.startsWith('https://nominatim.openstreetmap.org')) {
     return Promise.resolve(
@@ -29,7 +29,7 @@ function mockFetch(url: RequestInfo | URL, init?: RequestInit) {
 test('outfit API returns recommendation', async () => {
   process.env.OPENROUTER_API_KEY = 'test';
   process.env.VERBOSE = '';
-  (globalThis as any).fetch = mockFetch;
+  globalThis.fetch = mockFetch as typeof fetch;
 
   const req = new NextRequest('http://test/api/outfit', {
     method: 'POST',
