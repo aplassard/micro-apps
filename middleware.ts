@@ -7,6 +7,8 @@ export function middleware(req: NextRequest) {
   if (
     pathname.startsWith("/_next/") ||
     pathname.startsWith("/icon") ||
+    pathname.startsWith("/apple-touch-icon") ||
+    pathname.startsWith("/sw.js") ||
     pathname.startsWith("/manifest") ||
     pathname.startsWith("/public")
   ) {
